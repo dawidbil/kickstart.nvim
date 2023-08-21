@@ -130,12 +130,15 @@ require('lazy').setup({
         vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
         vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
+        vim.keymap.set('n', '<leader>sh', require('gitsigns').stage_hunk, { buffer = bufnr, desc = '[S]tage [H]unk' })
+        vim.keymap.set('n', '<leader>rh', require('gitsigns').reset_hunk, { buffer = bufnr, desc = '[R]eset [H]unk' })
+        vim.keymap.set('n', '<leader>uh', require('gitsigns').undo_stage_hunk, { buffer = bufnr, desc = '[U]ndo stage [H]unk' })
       end,
     },
   },
 
   {
-    -- Theme inspired by Atom
+    -- Best theme
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
     config = function()
@@ -163,7 +166,7 @@ require('lazy').setup({
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
     opts = {
-      char = '┊',
+      char = '⎸',
       show_trailing_blankline_indent = false,
     },
   },
@@ -213,7 +216,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
@@ -269,6 +272,13 @@ vim.keymap.set('i', 'jk', '<Esc>')
 -- replace ' with `
 vim.keymap.set('n', "'", "`")
 vim.keymap.set('n', "`", "'")
+
+-- Neotree
+vim.keymap.set('n', '<space>t', ':Neotree reveal_force_cwd<cr>')
+vim.keymap.set('n', '<space>th', ':Neotree close<cr>')
+vim.keymap.set('n', '<leader>b', ':Neotree toggle buffers right<cr>')
+vim.keymap.set('n', '<leader>bh', ':Neotree close buffers right<cr>')
+vim.keymap.set('n', '<leader>s', ':Neotree float git_status<cr>')
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
