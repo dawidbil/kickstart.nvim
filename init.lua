@@ -161,6 +161,9 @@ vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('n', "'", '`')
 vim.keymap.set('n', '`', "'")
 
+-- Switch between .h and .cpp files
+vim.keymap.set('n', '<leader>uc', '<cmd>:Ouroboros<cr>', { desc = 'Switch between .h and .cpp file' })
+
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
