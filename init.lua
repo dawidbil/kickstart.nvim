@@ -109,6 +109,9 @@ require('lazy').setup({
 
       -- Adds a number of user-friendly snippets
       'rafamadriz/friendly-snippets',
+
+      -- Buffer completion
+      'hrsh7th/cmp-buffer',
     },
   },
 
@@ -165,10 +168,8 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
-    opts = {
-      char = '⎸',
-      show_trailing_blankline_indent = false,
-    },
+    main = 'ibl',
+    opts = { },
   },
 
   -- "gc" to comment visual regions/lines
@@ -203,6 +204,15 @@ require('lazy').setup({
     },
     build = ':TSUpdate',
   },
+
+  -- Switch between header and implementation files in cpp
+  {
+    'jakemason/ouroboros',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  },
+
+  -- A duck
+  'tamton-aquib/duck.nvim',
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -328,6 +338,11 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+-- Live grep inside folder with Unreal Engine Source code
+vim.keymap.set('n', '<leader>us', '<cmd>:Telescope live_grep search_dirs=/home/toothless/ue_source_lookup/<cr>', { desc = 'Search phrase in Unreal Engine Source' })
+vim.keymap.set('n', '<leader>uf', '<cmd>:Telescope find_files search_dirs=/home/toothless/ue_source_lookup/<cr>', { desc = 'Search files in Unreal Engine Source' })
+-- Switch between .h and .cpp files
+vim.keymap.set('n', '<leader>uc', '<cmd>:Ouroboros<cr>', { desc = 'Switch between .h and .cpp file' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -400,6 +415,11 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+-- A duck
+vim.keymap.set('n', '<leader>dd', function() require("duck").hatch("ඞ", 3) end, { desc = 'There is an impostor among us' })
+vim.keymap.set('n', '<leader>dc', function() require("duck").hatch("🦀", 9) end, { desc = 'Crab rave' })
+vim.keymap.set('n', '<leader>dk', function() require("duck").cook() end, { desc = 'Stop the fun' })
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -537,10 +557,12 @@ cmp.setup {
       end
     end, { 'i', 's' }),
   },
-  sources = {
+  sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  },
+    { name = 'luasnip' }
+  }, {
+    {name = 'buffer' },
+  })
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
