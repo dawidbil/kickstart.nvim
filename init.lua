@@ -422,7 +422,7 @@ require('lazy').setup({
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     opts = {},
     config = function()
-      local fb = require 'telescope'.extensions.file_browser
+      local fb = require('telescope').extensions.file_browser
       vim.keymap.set('n', '<leader>fb', fb.file_browser, { desc = '[F]ile [B]rowser' })
     end,
   },
