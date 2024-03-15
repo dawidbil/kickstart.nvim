@@ -745,11 +745,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- Switch between header and implementation files in cpp
-    'jakemason/ouroboros',
-    requires = { { 'nvim-lua/plenary.nvim' } },
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
