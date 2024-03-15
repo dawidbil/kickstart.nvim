@@ -417,6 +417,16 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'nvim-telescope/telescope-file-browser.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
+    opts = {},
+    config = function()
+      local fb = require 'telescope'.extensions.file_browser
+      vim.keymap.set('n', '<leader>fb', fb.file_browser, { desc = '[F]ile [B]rowser' })
+    end,
+  },
+
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
