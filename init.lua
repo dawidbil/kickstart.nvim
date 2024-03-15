@@ -164,6 +164,14 @@ vim.keymap.set('n', '`', "'")
 -- Switch between .h and .cpp files
 vim.keymap.set('n', '<leader>uc', '<cmd>:Ouroboros<cr>', { desc = 'Switch between .h and .cpp file' })
 
+-- Live grep inside folder with Unreal Engine Source code
+vim.keymap.set('n', '<leader>us', function()
+  require('telescope.builtin').live_grep { cwd = '/home/toothless/ue_source_lookup' }
+end, { desc = '[U]nreal [S]earch in UE Source' })
+vim.keymap.set('n', '<leader>uf', function()
+  require('telescope.builtin').find_files { cwd = '/home/toothless/ue_source_lookup' }
+end, { desc = '[U]nreal [F]ind file in UE Source' })
+
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
