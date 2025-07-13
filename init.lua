@@ -380,6 +380,11 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Shortcut for grepping through plugins' source code
+      vim.keymap.set('n', '<leader>sp', function()
+        builtin.live_grep { cwd = '~/.local/share/nvim/lazy' }
+      end, { desc = '[S]earch [P]lugins' })
     end,
   },
 
@@ -876,6 +881,7 @@ require('lazy').setup({
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'custom.plugins.copilot',
   require 'custom.plugins.gruvbox',
+  require 'custom.plugins.vectorcode',
   require 'custom.plugins.codecompanion',
   require 'custom.plugins.render-markdown',
   require 'custom.plugins.iron',
