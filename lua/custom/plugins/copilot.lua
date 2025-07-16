@@ -2,16 +2,27 @@ return {
   'zbirenbaum/copilot.lua',
   cmd = 'Copilot',
   event = 'InsertEnter',
-  opts = {
-    filetypes = {
-      ['*'] = false,
-      python = true,
-      lua = true,
-      markdown = true,
-    },
-  },
-  config = function(_, opts)
-    require('copilot').setup(opts)
+  config = function()
+    require('copilot').setup {
+      filetypes = {
+        ['*'] = false,
+        python = true,
+        lua = true,
+        markdown = true,
+      },
+      should_attach = function(_, bufname)
+        if string.match(bufname, 'env') then
+          return false
+        end
+        if string.match(bufname, 'yaml') then
+          return false
+        end
+        if string.match(bufname, 'yml') then
+          return false
+        end
+        return true
+      end,
+    }
     local suggestion = require 'copilot.suggestion'
     vim.keymap.set('n', '<leader>ce', function()
       suggestion.toggle_auto_trigger()
@@ -31,11 +42,5 @@ return {
     vim.keymap.set('i', '<leader>cd', function()
       suggestion.dismiss()
     end, { desc = 'Dismiss the current suggestion' })
-  end,
-  should_attach = function(_, bufname)
-    if string.match(bufname, 'env') then
-      return false
-    end
-    return true
   end,
 }

@@ -32,7 +32,7 @@ return {
       },
       strategies = {
         chat = {
-          adapter = 'openai',
+          adapter = 'copilot',
           keymaps = {
             clear = {
               modes = { n = 'gtx' },
@@ -40,7 +40,7 @@ return {
           },
         },
         inline = {
-          adatper = 'openai',
+          adatper = 'copilot',
         },
       },
       opts = {

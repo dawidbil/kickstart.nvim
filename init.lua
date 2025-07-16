@@ -385,6 +385,30 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sp', function()
         builtin.live_grep { cwd = '~/.local/share/nvim/lazy' }
       end, { desc = '[S]earch [P]lugins' })
+
+      -- Search files in python virtual environment
+      local function find_files_in_venv()
+        local venv = os.getenv 'VIRTUAL_ENV'
+        if venv then
+          require('telescope.builtin').find_files { cwd = venv }
+        else
+          vim.notify('No virtual environment activated!', vim.log.levels.WARN)
+        end
+      end
+
+      vim.keymap.set('n', '<leader>svf', find_files_in_venv, { desc = '[S]earch [V]irtual Environment [F]iles' })
+
+      -- Live grep in python virtual environment
+      local function live_grep_in_venv()
+        local venv = os.getenv 'VIRTUAL_ENV'
+        if venv then
+          require('telescope.builtin').live_grep { cwd = venv }
+        else
+          vim.notify('No virtual environment activated!', vim.log.levels.WARN)
+        end
+      end
+
+      vim.keymap.set('n', '<leader>svg', live_grep_in_venv, { desc = '[S]earch [V]irtual Environment [G]rep' })
     end,
   },
 
@@ -565,7 +589,7 @@ require('lazy').setup({
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
         severity_sort = true,
-        float = { border = 'rounded', source = 'if_many' },
+        float = { border = 'rounded', source = true },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
           text = {
