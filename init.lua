@@ -350,6 +350,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>st', builtin.git_status, { desc = '[S]earch Git [S]tatus' })
+      vim.keymap.set('n', '<leader>sc', builtin.git_commits, { desc = '[S]earch Git [C]tatus' })
 
       -- Search for files ignoring the .gitignore file
       vim.keymap.set('n', '<leader>sF', function()
@@ -888,7 +890,15 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      folds = { enable = true },
     },
+    -- {
+    --   'LunarVim/bigfile.nvim',
+    --   opts = {
+    --     filesize = 2,
+    --     filetypes = { 'html', 'json', 'csv' },
+    --   },
+    -- },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
@@ -905,7 +915,7 @@ require('lazy').setup({
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'custom.plugins.copilot',
   require 'custom.plugins.gruvbox',
-  require 'custom.plugins.vectorcode',
+  -- require 'custom.plugins.vectorcode',
   require 'custom.plugins.codecompanion',
   require 'custom.plugins.render-markdown',
   require 'custom.plugins.iron',

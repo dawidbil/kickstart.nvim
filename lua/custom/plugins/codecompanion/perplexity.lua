@@ -8,7 +8,7 @@ return require('codecompanion.adapters').extend('openai_compatible', {
     user = 'user',
   },
   env = {
-    api_key = 'PERPLEXITY_API_KEY',
+    api_key = 'cmd:op read "op://Employee/Perplexity API key/password" --no-newline',
     url = 'https://api.perplexity.ai',
     chat_url = '/chat/completions',
   },
