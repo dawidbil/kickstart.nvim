@@ -66,7 +66,7 @@ return {
 %s
 ```
 
-Using @{cmd_runner}, git commit the changes. Important: the changes you see are already staged, so you only need `git commit` command. Also, write down the commit message before using the tool.
+Using @{cmd_runner}, git commit the changes. Important: First, write down the commit message and then proceed to call the tool without asking for my prompt.
 ]],
                   vim.fn.system 'git diff --no-ext-diff --staged'
                 )
