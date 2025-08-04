@@ -921,6 +921,7 @@ require('lazy').setup({
   require 'custom.plugins.iron',
   require 'custom.plugins.jupytext',
   require 'custom.plugins.image',
+  require 'custom.plugins.oil',
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
