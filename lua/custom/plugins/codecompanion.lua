@@ -31,14 +31,7 @@ return {
             buffer_watch = '👀 ',
           },
           window = {
-            layout = 'buffer',
-          },
-          tools = {
-            opts = {
-              default_tools = {
-                'insert_edit_into_file',
-              },
-            },
+            layout = 'vertical',
           },
         },
       },
