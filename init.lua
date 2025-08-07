@@ -392,7 +392,7 @@ require('lazy').setup({
       local function find_files_in_venv()
         local venv = os.getenv 'VIRTUAL_ENV'
         if venv then
-          require('telescope.builtin').find_files { cwd = venv }
+          require('telescope.builtin').find_files { cwd = venv, hidden = true, no_ignore = true }
         else
           vim.notify('No virtual environment activated!', vim.log.levels.WARN)
         end

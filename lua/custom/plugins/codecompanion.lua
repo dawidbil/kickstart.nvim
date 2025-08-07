@@ -59,7 +59,7 @@ return {
 %s
 ```
 
-Using @{cmd_runner}, git commit the changes. Important: First, write down the commit message and then proceed to call the tool without asking for my prompt.
+Using @{cmd_runner}, git commit the changes. Important: First, write down the commit message and then proceed to call the tool without asking for my prompt. Use git commit -m, do not stage any changes!
 ]],
                   vim.fn.system 'git diff --no-ext-diff --staged'
                 )
@@ -77,6 +77,32 @@ Using @{cmd_runner}, git commit the changes. Important: First, write down the co
           keymaps = {
             clear = {
               modes = { n = 'gtx' },
+            },
+          },
+          slash_commands = {
+            ['venv_file'] = {
+              callback = require 'custom.plugins.codecompanion.venv_file',
+              description = 'Select a file from the Python venv directory',
+              opts = {
+                provider = 'default',
+                contains_code = true,
+              },
+            },
+            ['file'] = {
+              keymaps = {
+                modes = {
+                  i = '<C-f>',
+                  n = '<C-f>',
+                },
+              },
+            },
+            ['buffer'] = {
+              keymaps = {
+                modes = {
+                  i = '<C-b>',
+                  n = '<C-b>',
+                },
+              },
             },
           },
         },
