@@ -26,7 +26,7 @@ return {
             buffer_watch = '👀 ',
           },
           window = {
-            layout = 'buffer',
+            layout = 'vertical',
           },
         },
       },

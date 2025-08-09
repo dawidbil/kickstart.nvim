@@ -100,6 +100,9 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- ubuntu 24.04 doesn't allow installing globally
+vim.g.python3_host_prog = os.getenv 'HOME' .. '/.venv/bin/python'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -905,7 +908,7 @@ require('lazy').setup({
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'custom.plugins.copilot',
   require 'custom.plugins.gruvbox',
-  require 'custom.plugins.vectorcode',
+  -- require 'custom.plugins.vectorcode',
   require 'custom.plugins.codecompanion',
   require 'custom.plugins.render-markdown',
   require 'custom.plugins.iron',
