@@ -353,6 +353,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>st', builtin.git_status, { desc = '[S]earch Git [S]tatus' })
+      vim.keymap.set('n', '<leader>sc', builtin.git_commits, { desc = '[S]earch Git [C]tatus' })
 
       -- Search for files ignoring the .gitignore file
       vim.keymap.set('n', '<leader>sF', function()
@@ -393,7 +395,7 @@ require('lazy').setup({
       local function find_files_in_venv()
         local venv = os.getenv 'VIRTUAL_ENV'
         if venv then
-          require('telescope.builtin').find_files { cwd = venv }
+          require('telescope.builtin').find_files { cwd = venv, hidden = true, no_ignore = true }
         else
           vim.notify('No virtual environment activated!', vim.log.levels.WARN)
         end
@@ -891,7 +893,15 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      folds = { enable = true },
     },
+    -- {
+    --   'LunarVim/bigfile.nvim',
+    --   opts = {
+    --     filesize = 2,
+    --     filetypes = { 'html', 'json', 'csv' },
+    --   },
+    -- },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
@@ -914,6 +924,7 @@ require('lazy').setup({
   require 'custom.plugins.iron',
   require 'custom.plugins.jupytext',
   require 'custom.plugins.image',
+  require 'custom.plugins.oil',
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the

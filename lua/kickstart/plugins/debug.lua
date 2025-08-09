@@ -26,7 +26,62 @@ return {
     {
       'mfussenegger/nvim-dap-python',
       config = function()
-        require('dap-python').setup 'uv'
+        require('dap-python').setup '~/venv_test/bin/python'
+        require('dap-python').test_runner = 'pytest'
+        local configs = require('dap').configurations.python
+
+        table.insert(configs, 1, {
+          type = 'python',
+          request = 'launch',
+          name = 'file:args (justMyCode = false)',
+          program = '${file}',
+          args = function()
+            local args_string = vim.fn.input 'Arguments: '
+            local utils = require 'dap.utils'
+            if utils.splitstr and vim.fn.has 'nvim-0.10' == 1 then
+              return utils.splitstr(args_string)
+            end
+            return vim.split(args_string, ' +')
+          end,
+          console = 'integratedTerminal',
+          pythonPath = nil,
+          justMyCode = false,
+        })
+
+        table.insert(configs, 1, {
+          type = 'python',
+          request = 'launch',
+          name = 'file:args (subProcess = true)',
+          program = '${file}',
+          args = function()
+            local args_string = vim.fn.input 'Arguments: '
+            local utils = require 'dap.utils'
+            if utils.splitstr and vim.fn.has 'nvim-0.10' == 1 then
+              return utils.splitstr(args_string)
+            end
+            return vim.split(args_string, ' +')
+          end,
+          console = 'integratedTerminal',
+          pythonPath = nil,
+          subProcess = true,
+        })
+
+        table.insert(configs, 1, {
+          type = 'python',
+          request = 'launch',
+          name = 'Debug pytest',
+          module = 'pytest',
+          args = { '${file}' },
+          justMyCode = false,
+        })
+
+        vim.keymap.set('n', '<leader>dt', function()
+          require('dap-python').test_method()
+        end, { desc = 'Debug Python test method' })
+
+        vim.keymap.set('n', '<leader>dc', function()
+          require('dap-python').test_class()
+        end, { desc = 'Debug Python test class' })
       end,
     },
   },
@@ -38,6 +93,13 @@ return {
         require('dap').continue()
       end,
       desc = 'Debug: Start/Continue',
+    },
+    {
+      '<F6>',
+      function()
+        require('dap').run_last()
+      end,
+      desc = 'Debug: Run Last',
     },
     {
       '<F1>',
@@ -89,10 +151,20 @@ return {
       end,
       desc = 'Debug: Terminate',
     },
+    {
+      '<F9>',
+      function()
+        require('dap').pause()
+      end,
+      desc = 'Debug: Pause',
+    },
   },
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+
+    -- Load launch.json inside .vscode
+    -- require('dap.ext.vscode').load_launchjs(nil, { python = { 'python' } })
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
@@ -107,7 +179,7 @@ return {
       -- online, please don't ask me how to install them :)
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
-        'delve',
+        -- 'delve',
       },
     }
 
@@ -150,12 +222,12 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
-    require('dap-go').setup {
-      delve = {
-        -- On Windows delve must be run attached or it crashes.
-        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-        detached = vim.fn.has 'win32' == 0,
-      },
-    }
+    -- require('dap-go').setup {
+    --   delve = {
+    --     -- On Windows delve must be run attached or it crashes.
+    --     -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
+    --     detached = vim.fn.has 'win32' == 0,
+    --   },
+    -- }
   end,
 }

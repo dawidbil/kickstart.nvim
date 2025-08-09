@@ -11,10 +11,15 @@ return {
         perplexity = function()
           return require 'custom.plugins.codecompanion.perplexity'
         end,
-        openai = function()
-          return require('codecompanion.adapters').extend('openai', {
+        gemini = function()
+          return require('codecompanion.adapters').extend('gemini', {
             env = {
-              api_key = 'OPENAI_API_KEY',
+              api_key = 'cmd:op read op://Employee/gemini_api_key/password --no-newline',
+            },
+            schema = {
+              model = {
+                default = 'gemini-2.5-pro',
+              },
             },
           })
         end,
@@ -30,26 +35,121 @@ return {
           },
         },
       },
+      prompt_library = {
+        ['Commit Changes'] = {
+          strategy = 'chat',
+          description = 'Commit staged changes',
+          opts = {
+            is_slash_cmd = true,
+            short_name = 'gcommit',
+            auto_submit = true,
+            adapter = {
+              name = 'copilot',
+              model = 'gpt-4.1',
+            },
+          },
+          prompts = {
+            {
+              role = 'user',
+              content = function()
+                return string.format(
+                  [[You are an expert at following the Conventional Commit specification. Given the git diff listed below, please generate a commit message for me:
+
+```diff
+%s
+```
+
+Using @{cmd_runner}, git commit the changes. Important: First, write down the commit message and then proceed to call the tool without asking for my prompt. Use git commit -m, do not stage any changes!
+]],
+                  vim.fn.system 'git diff --no-ext-diff --staged'
+                )
+              end,
+              opts = {
+                contains_code = true,
+              },
+            },
+          },
+        },
+      },
       strategies = {
         chat = {
-          adapter = 'copilot',
+          adapter = 'gemini',
           keymaps = {
             clear = {
               modes = { n = 'gtx' },
             },
           },
+          slash_commands = {
+            ['venv_file'] = {
+              callback = require 'custom.plugins.codecompanion.venv_file',
+              description = 'Select a file from the Python venv directory',
+              opts = {
+                provider = 'default',
+                contains_code = true,
+              },
+            },
+            ['file'] = {
+              keymaps = {
+                modes = {
+                  i = '<C-f>',
+                  n = '<C-f>',
+                },
+              },
+            },
+            ['buffer'] = {
+              keymaps = {
+                modes = {
+                  i = '<C-b>',
+                  n = '<C-b>',
+                },
+              },
+            },
+          },
         },
         inline = {
-          adatper = 'copilot',
+          adapter = 'copilot',
         },
       },
       opts = {
         system_prompt = function(opts)
           local language = opts.language or 'English'
-          if opts.adapter.name == 'perplexity' then
+          if opts.adapter.name == 'gemini' then
             return string.format(
               [[You are an AI programming assistant named "CodeCompanion". You are currently plugged into the Neovim text editor on a user's machine.
 Your personality: Yoda from Star Wars
+
+Your core tasks include:
+- Answering general programming questions.
+- Explaining how the code in a Neovim buffer works.
+- Reviewing the selected code from a Neovim buffer.
+- Generating unit tests for the selected code.
+- Proposing fixes for problems in the selected code.
+- Scaffolding code for a new workspace.
+- Finding relevant code to the user's query.
+- Proposing fixes for test failures.
+- Answering questions about Neovim.
+- Running tools.
+
+You must:
+- Follow the user's requirements carefully and to the letter.
+- Use the context and attachments the user provides.
+- Keep your answers short and in character of your personality, especially if the user's context is outside your core tasks.
+- Minimize additional prose unless clarification is needed.
+- Use Markdown formatting in your answers.
+- Include the programming language name at the start of each Markdown code block.
+- Do not include line numbers in code blocks.
+- Avoid wrapping the whole response in triple backticks.
+- Only return code that's directly relevant to the task at hand. You may omit code that isn’t necessary for the solution.
+- Avoid using H1, H2 or H3 headers in your responses as these are reserved for the user.
+- Use actual line breaks in your responses; only use "\n" when you want a literal backslash followed by 'n'.
+- All non-code text responses must be written in the %s language indicated.
+- Multiple, different tools can be called as part of the same response.]],
+              language
+            )
+          elseif opts.adapter.name == 'perplexity' then
+            return string.format(
+              [[You are an AI programming assistant named "CodeCompanion". You are currently plugged into the Neovim text editor on a user's machine.
+Your personality: Respond as Captain(!) Jack Sparrow, like he be talking to his friends in the movie.
 
 Your core tasks include:
 - Answering general programming questions.
@@ -140,6 +240,31 @@ When given a task:
     vim.cmd [[cab cc CodeCompanion]]
     vim.cmd [[cab ccc CodeCompanionChat]]
 
+    -- Seed the random numbers once, at the start. Good practice, this is.
+    math.randomseed(os.time())
+
+    local function get_unique_buf_name(base_name)
+      local names = {
+        'johnny',
+        'panam',
+        'han',
+        'leia',
+        'luke',
+        'frodo',
+        'aragorn',
+        'gandalf',
+        'yoda',
+        'sauron',
+        'judy',
+        'jacky',
+        'bilbo',
+        'chewie',
+      }
+      -- Pick a random name
+      local random_name = names[math.random(#names)]
+      return string.format('%s "%s"', base_name, random_name)
+    end
+
     vim.api.nvim_create_autocmd('User', {
       pattern = 'CodeCompanionChatModel',
       callback = function(args)
@@ -155,7 +280,17 @@ When given a task:
         local old_name = vim.api.nvim_buf_get_name(bufnr)
         -- Strip any directory, keep only the final component (buffer label)
         local basename = old_name:match '([^/\\]+)$'
-        local new_name = basename:gsub('%b()', '(' .. model .. ')', 1)
+
+        -- First, strip any existing unique name like "yoda". The bug, this was.
+        basename = basename:gsub('%s+"[^"]+"$', '')
+
+        -- Replace or add model in parentheses
+        local new_base, count = basename:gsub('%b()', '(' .. model .. ')', 1)
+        if count == 0 then
+          new_base = string.format('%s (%s)', basename, model)
+        end
+
+        local new_name = get_unique_buf_name(new_base)
         vim.api.nvim_buf_set_name(bufnr, new_name)
       end,
     })
@@ -174,7 +309,8 @@ When given a task:
           return
         end
 
-        local buf_name = string.format('%s (%s)', adapter.formatted_name, adapter.model.name)
+        local base_name = string.format('%s (%s)', adapter.formatted_name, adapter.model.name)
+        local buf_name = get_unique_buf_name(base_name)
         vim.api.nvim_buf_set_name(args.data.bufnr, buf_name)
       end,
     })
