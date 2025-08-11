@@ -11,18 +11,6 @@ return {
         perplexity = function()
           return require 'custom.plugins.codecompanion.perplexity'
         end,
-        gemini = function()
-          return require('codecompanion.adapters').extend('gemini', {
-            env = {
-              api_key = 'cmd:op read op://Employee/gemini_api_key/password --no-newline',
-            },
-            schema = {
-              model = {
-                default = 'gemini-2.5-pro',
-              },
-            },
-          })
-        end,
       },
       display = {
         chat = {
@@ -80,12 +68,18 @@ Using @{cmd_runner}, git commit the changes. Important: First, write down the co
             },
           },
           slash_commands = {
-            ['venv_file'] = {
-              callback = require 'custom.plugins.codecompanion.venv_file',
-              description = 'Select a file from the Python venv directory',
+            ['context_file'] = {
+              callback = require 'custom.plugins.codecompanion.context_file',
+              description = 'Select a file from pre-configured directories',
               opts = {
                 provider = 'default',
                 contains_code = true,
+              },
+              keymaps = {
+                modes = {
+                  i = '<C-i>',
+                  n = '<C-i>',
+                },
               },
             },
             ['file'] = {
