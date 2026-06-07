@@ -188,18 +188,18 @@ require('lazy').setup({
   },
 
   -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
+  -- { -- Adds git related signs to the gutter, as well as utilities for managing changes
+  --   'lewis6991/gitsigns.nvim',
+  --   opts = {
+  --     signs = {
+  --       add = { text = '+' },
+  --       change = { text = '~' },
+  --       delete = { text = '_' },
+  --       topdelete = { text = '‾' },
+  --       changedelete = { text = '~' },
+  --     },
+  --   },
+  -- },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -907,6 +907,7 @@ require('lazy').setup({
   require 'custom.plugins.gruvbox',
   require 'custom.plugins.fidget',
   require 'custom.plugins.filetree',
+  require 'custom.plugins.diffview',
   -- require 'custom.plugins.vectorcode',
   require 'custom.plugins.codecompanion',
   require 'custom.plugins.render-markdown',
@@ -914,6 +915,24 @@ require('lazy').setup({
   require 'custom.plugins.jupytext',
   require 'custom.plugins.image',
   require 'custom.plugins.oil',
+
+  -- in your plugins spec
+  {
+    dir = '~/patchwork.nvim',
+    name = 'patchwork.nvim',
+    dev = true,
+    opts = {
+      aider = {
+        model = 'litellm_proxy/fast',
+        extra_args = { '--no-show-model-warnings', '--model-metadata-file', vim.fn.expand '~/.config/aider/.aider.model.metadata.json' },
+      },
+      litellm_proxy = {
+        port = 4100,
+        config_path = vim.fn.expand '~/.config/litellm/patchwork.yaml',
+        env = { OPENAI_API_KEY = os.getenv 'OPENAI_API_KEY' },
+      },
+    },
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
