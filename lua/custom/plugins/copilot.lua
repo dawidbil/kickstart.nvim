@@ -1,12 +1,46 @@
 return {
-  'github/copilot.vim',
-
-  vim.keymap.set('i', '<leader>cc', 'copilot#Accept("\\<CR>")', { expr = true, replace_keycodes = false, desc = 'Accept the current suggestion' }),
-  copilot_no_tab_map = true,
-  vim.keymap.set('i', '<leader>cd', '<Plug>(copilot-dismiss)', { desc = 'Dismiss the current suggestion' }),
-  vim.keymap.set('i', '<leader>cs', '<Plug>(copilot-suggest)', { desc = 'Suggest a new completion' }),
-  vim.keymap.set('i', '<leader>cn', '<Plug>(copilot-next)', { desc = 'Go to the next suggestion' }),
-  vim.keymap.set('i', '<leader>cp', '<Plug>(copilot-prev)', { desc = 'Go to the previous suggestion' }),
-  vim.keymap.set('i', '<leader>cl', '<Plug>(copilot-accept-line)', { desc = 'Accept the current line' }),
-  vim.keymap.set('i', '<leader>cw', '<Plug>(copilot-accept-word)', { desc = 'Accept the current word' }),
+  'zbirenbaum/copilot.lua',
+  cmd = 'Copilot',
+  event = 'InsertEnter',
+  config = function()
+    require('copilot').setup {
+      filetypes = {
+        ['*'] = false,
+        python = true,
+        lua = true,
+        markdown = true,
+      },
+      should_attach = function(_, bufname)
+        if string.match(bufname, 'env') then
+          return false
+        end
+        if string.match(bufname, 'yaml') then
+          return false
+        end
+        if string.match(bufname, 'yml') then
+          return false
+        end
+        return true
+      end,
+    }
+    local suggestion = require 'copilot.suggestion'
+    vim.keymap.set('n', '<leader>ce', function()
+      suggestion.toggle_auto_trigger()
+    end, { desc = 'Toggle auto trigger for suggestions' })
+    vim.keymap.set('i', '<leader>ca', function()
+      suggestion.next()
+    end, { desc = 'Ask for a next suggestion' })
+    vim.keymap.set('i', '<leader>cp', function()
+      suggestion.prev()
+    end, { desc = 'Ask for a previous suggestion' })
+    vim.keymap.set('i', '<leader>cc', function()
+      suggestion.accept()
+    end, { desc = 'Accept the current suggestion' })
+    vim.keymap.set('i', '<leader>cl', function()
+      suggestion.accept_line()
+    end, { desc = 'Accept the current suggestion and move to the next line' })
+    vim.keymap.set('i', '<leader>cd', function()
+      suggestion.dismiss()
+    end, { desc = 'Dismiss the current suggestion' })
+  end,
 }
